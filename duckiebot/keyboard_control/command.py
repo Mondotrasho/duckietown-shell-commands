@@ -35,6 +35,7 @@ class DTCommand(DTCommandAbs):
             browser=browser,
             no_pull=parsed.no_pull,
             window_args={
+                "title": f"Keyboard Controller : {parsed.robot}",
                 "height": 418,
                 "icon": get_asset_icon_path(ICON_ASSET),
                 "min-height": 418,
