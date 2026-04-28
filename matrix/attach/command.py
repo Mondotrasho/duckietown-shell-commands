@@ -38,11 +38,13 @@ class DTCommand(DTCommandAbs):
                 dtslogger.info(f"IP address found: {engine_hostname}")
         else:
             engine_hostname = parsed.engine_hostname
+        # Use the supplied engine port when provided, otherwise fall back to the default Duckiematrix engine port.
+        engine_port = getattr(parsed, "engine_port", DEFAULT_DUCKIEMATRIX_ENGINE_PORT)
         # set the HIL configuration
         hil_conn: HILConnectionConfiguration = HILConnectionConfiguration(
             simulator=DTPSContextMsg(
                 name="duckiematrix",
-                urls=[f"http://{engine_hostname}:{DEFAULT_DUCKIEMATRIX_ENGINE_PORT}/"],
+                urls=[f"http://{engine_hostname}:{engine_port}/"],
                 path="/robot/",
             ),
             agent_name=parsed.entity,
@@ -54,7 +56,7 @@ class DTCommand(DTCommandAbs):
         # ask the world robot to join the network
         try:
             dtslogger.info(f"Requesting robot '{parsed.robot}' to attach to entity '{parsed.entity}' on "
-                           f"Duckiematrix engine at {engine_hostname}...")
+                           f"Duckiematrix engine at {engine_hostname}:{engine_port}...")
             # set the configuration first, then the connection, order matters here to avoid robots acting on an old cfg
             kv.set("hil/configuration", hil_cfg)
             kv.set("hil/connection", hil_conn)

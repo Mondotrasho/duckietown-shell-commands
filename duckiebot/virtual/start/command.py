@@ -37,6 +37,12 @@ class DTCommand(DTCommandAbs):
             default=shell.profile.distro.name,
             help="Tag of the robot runtime image to use"
         )
+        parser.add_argument(
+            "--port-offset",
+            type=int,
+            default=0,
+            help="Offset added to host ports for running multiple virtual robots"
+        )
         parser.add_argument("robot", nargs=1, help="Name of the Robot to start")
         # parse arguments
         parsed = parser.parse_args(args)
@@ -97,13 +103,13 @@ class DTCommand(DTCommandAbs):
             "remove": True,
             "cgroupns": "private",
             "publish": [
-                ["14551", "14551", "udp"],   # Ardupilot SITL
-                ["80", "80", "tcp"],         # device-proxy HTTP entrypoint for robot.local/dashboard/... 
-                ["7447", "7447", "tcp"],     # ROS2 zenoh bridge
-                ["8080", "8080", "tcp"],     # Dashboard backend (HTTP)
-                ["9001", "9001", "tcp"],     # rosbridge WebSocket
-                ["11411", "11411", "tcp"],   # DTPS KV store
-                ["11911", "11911", "tcp"],   # DTPS switchboard
+                [str(14551 + parsed.port_offset), "14551", "udp"],   # Ardupilot SITL
+                [str(80 + parsed.port_offset), "80", "tcp"],         # device-proxy HTTP entrypoint for robot.local/dashboard/...
+                [str(7447 + parsed.port_offset), "7447", "tcp"],     # ROS2 zenoh bridge
+                [str(8080 + parsed.port_offset), "8080", "tcp"],     # Dashboard backend (HTTP)
+                [str(9001 + parsed.port_offset), "9001", "tcp"],     # rosbridge WebSocket
+                [str(11411 + parsed.port_offset), "11411", "tcp"],   # DTPS KV store
+                [str(11911 + parsed.port_offset), "11911", "tcp"],   # DTPS switchboard
             ],
             "volumes": [
                 # Keep var/lib/docker as bind mount for Docker daemon data

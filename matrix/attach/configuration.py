@@ -5,6 +5,9 @@ from dt_shell.commands import DTCommandConfigurationAbs
 from dt_shell.environments import ShellCommandEnvironmentAbs
 
 
+DEFAULT_DUCKIEMATRIX_ENGINE_PORT = 7501
+
+
 class DTCommandConfiguration(DTCommandConfigurationAbs):
 
     @classmethod
@@ -27,6 +30,14 @@ class DTCommandConfiguration(DTCommandConfigurationAbs):
             default=None,
             type=str,
             help="Hostname or IP address of the engine to attach the robot to"
+        )
+        parser.add_argument(
+            "-p",
+            "--port",
+            dest="engine_port",
+            default=DEFAULT_DUCKIEMATRIX_ENGINE_PORT,
+            type=int,
+            help=f"HTTP/DTPS port of the Duckiematrix engine. Default: {DEFAULT_DUCKIEMATRIX_ENGINE_PORT}"
         )
         parser.add_argument(
             "-d",
